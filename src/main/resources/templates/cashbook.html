@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>cashbook</title>
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script>
+	$(document).ready(function(){
+		
+		list();
+		
+		$('#inputButton').click(cashbookInput);
+	});
+	
+	function cashbookInput(){
+		
+		let cashbookData = {
+				inputDate : $('#inputDate').val(),
+				type: $('#type').val(),
+				amount: $('#amount').val(),
+				memo : $('#memo').val()
+			};
+
+			$.ajax({
+				url: 'input',
+				type: 'post',
+				data : cashbookData,
+				success: function() {
+					//정상 처리되면 안내 메시지를 출력한다.
+					alert('저장되었습니다.');
+					//입력한 금액과 내역 문자열을 지운다.
+					$('#amount').val('');
+					$('#memo').val('');
+					//변경된 가계부 내역을 다시 불러온다.
+					list();
+				},
+				error : function(e) {
+					alert('저장 실패했습니다.')
+				}
+			});
+		}
+</script>
+</head>
+<body>
+ 	<h1>[ <span th:text="${#authentication.name}"></span>님의 가계부 ]</h1>
+ 	
+ 	<!-- 가계부 정보 입력 -->
+	<div>
+		<input type="date" id="inputDate">
+		<select id="type">
+			<option value="수입">수입</option>
+			<option value="지출">지출</option>
+		</select>
+		<input type="number" id="amount" placeholder="0">
+		<input type="text" id="memo" placeholder="내역을 입력하세요.">
+		<button id="inputButton">입력</button>
+	</div>
+	<br>
+	
+	
+</body>
+</html>
